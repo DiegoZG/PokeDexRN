@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Image, Animated } from 'react-native';
 import { Pokemon } from '../types/pokemon';
 import { getTypeColor } from '../utils/typeColors';
+import { useTheme } from '../context/ThemeContext';
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -11,6 +12,7 @@ interface PokemonCardProps {
 export function PokemonCard({ pokemon, onPress }: PokemonCardProps) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const translateYAnim = useRef(new Animated.Value(0)).current;
+  const { isDark } = useTheme();
 
   const handlePressIn = () => {
     Animated.parallel([
@@ -59,12 +61,12 @@ export function PokemonCard({ pokemon, onPress }: PokemonCardProps) {
             { translateY: translateYAnim },
           ],
         }}
-        className="bg-white rounded-xl shadow-sm overflow-hidden"
+        className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-sm overflow-hidden`}
       >
         <View
           className="p-2"
           style={{
-            backgroundColor: getTypeColor(primaryType) + '20',
+            backgroundColor: getTypeColor(primaryType) + (isDark ? '30' : '20'),
           }}
         >
           <View className="items-center">
@@ -73,7 +75,7 @@ export function PokemonCard({ pokemon, onPress }: PokemonCardProps) {
               className="w-20 h-20"
               resizeMode="contain"
             />
-            <Text className="text-sm font-bold text-gray-800 capitalize mt-1">
+            <Text className={`text-sm font-bold ${isDark ? 'text-gray-100' : 'text-gray-800'} capitalize mt-1`}>
               {pokemon.name}
             </Text>
             <View className="flex-row mt-1">
@@ -81,11 +83,11 @@ export function PokemonCard({ pokemon, onPress }: PokemonCardProps) {
                 <View
                   key={typeObj.type.name}
                   className="px-1.5 py-0.5 rounded-full mx-0.5"
-                  style={{ backgroundColor: getTypeColor(typeObj.type.name) + '40' }}
+                  style={{ backgroundColor: getTypeColor(typeObj.type.name) + (isDark ? '30' : '40') }}
                 >
                   <Text
                     className="text-[10px] font-semibold capitalize"
-                    style={{ color: getTypeColor(typeObj.type.name) }}
+                    style={{ color: isDark ? '#fff' : getTypeColor(typeObj.type.name) }}
                   >
                     {typeObj.type.name}
                   </Text>

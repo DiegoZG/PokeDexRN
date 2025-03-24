@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export const AppNavigator = () => {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <StatusBar animated={true} barStyle="light-content" translucent backgroundColor="transparent" hidden={false} />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="PokemonList"

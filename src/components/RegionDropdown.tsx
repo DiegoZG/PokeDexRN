@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
 
 export interface Region {
   id: number;
@@ -29,6 +29,7 @@ interface RegionDropdownProps {
 
 export function RegionDropdown({ selectedRegion, onRegionSelect }: RegionDropdownProps) {
   const [modalVisible, setModalVisible] = useState(false);
+  const { isDark } = useTheme();
 
   return (
     <>
@@ -43,51 +44,47 @@ export function RegionDropdown({ selectedRegion, onRegionSelect }: RegionDropdow
 
       <Modal
         visible={modalVisible}
-        animationType="fade"
+        animationType="slide"
         onRequestClose={() => setModalVisible(false)}
         transparent={true}
       >
-        <SafeAreaView className="flex-1 bg-white" edges={['top']}>
-          <View className="flex-row justify-between items-center px-4 py-3 mt-8 border-b border-gray-200">
-            <Text className="text-lg font-semibold text-gray-900">Select Region</Text>
+        <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-white'}`} edges={['top']}>
+          <View className={`flex-row justify-between items-center px-4 py-3 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+            <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>Select Region</Text>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               className="p-2"
             >
-              <MaterialIcons name="close" size={24} color="#4B5563" />
+              <MaterialIcons name="close" size={24} color={isDark ? '#9CA3AF' : '#4B5563'} />
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="flex-1">
+          <View className="p-4">
             {REGIONS.map((region) => (
               <TouchableOpacity
                 key={region.id}
-                className={`px-4 py-4 border-b border-gray-100 ${
-                  selectedRegion.id === region.id ? 'bg-blue-50' : 'bg-white'
-                }`}
+                className={`flex-row justify-between items-center px-4 py-3 mb-2 rounded-xl ${
+                  isDark ? 'bg-gray-800' : 'bg-gray-50'
+                } ${selectedRegion.id === region.id ? (isDark ? 'border border-blue-500' : 'border border-blue-500') : ''}`}
                 onPress={() => {
                   onRegionSelect(region);
                   setModalVisible(false);
                 }}
               >
-                <View className="flex-row items-center justify-between">
-                  <View>
-                    <Text className={`text-lg font-medium ${
-                      selectedRegion.id === region.id ? 'text-blue-600' : 'text-gray-800'
-                    }`}>
-                      {region.name}
-                    </Text>
-                    <Text className="text-sm text-gray-500 mt-1">
-                      #{region.startId} - #{region.endId}
-                    </Text>
-                  </View>
-                  {selectedRegion.id === region.id && (
-                    <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
-                  )}
+                <View>
+                  <Text className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {region.name}
+                  </Text>
+                  <Text className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    #{region.startId} - #{region.endId}
+                  </Text>
                 </View>
+                {selectedRegion.id === region.id && (
+                  <MaterialIcons name="check" size={24} color="#3B82F6" />
+                )}
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </View>
         </SafeAreaView>
       </Modal>
     </>

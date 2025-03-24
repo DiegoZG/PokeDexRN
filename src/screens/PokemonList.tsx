@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { RegionDropdown, Region } from '../components/RegionDropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
 
 type PokemonListScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PokemonList'>;
 
@@ -14,6 +15,7 @@ export function PokemonList() {
   const navigation = useNavigation<PokemonListScreenNavigationProp>();
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isDark } = useTheme();
   const [selectedRegion, setSelectedRegion] = useState<Region>({
     id: 1,
     name: 'Kanto',
@@ -101,14 +103,14 @@ export function PokemonList() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-gray-50">
-        <ActivityIndicator size="large" color="#3B82F6" />
+      <SafeAreaView className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <ActivityIndicator size="large" color={isDark ? '#60A5FA' : '#3B82F6'} />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={['left', 'right', 'bottom']}>
+    <SafeAreaView className={`flex-1 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`} edges={['left', 'right', 'bottom']}>
       <View className="px-4 py-2">
         <RegionDropdown
           selectedRegion={selectedRegion}
